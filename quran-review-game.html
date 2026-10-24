@@ -8,14 +8,13 @@
 <style>
 :root{--sky:#d6f1ff;--mint:#8fe3c0;--sun:#ffd65c;--pink:#ff8fa8;--ink:#2d2a55;--vio:#7a5cfa}
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;background:linear-gradient(#d6f1ff,#fff4d6);color:var(--ink);font-family:system-ui,"Segoe UI",Tahoma,sans-serif;display:flex;justify-content:center}
+body{margin:0;min-height:100vh;background:linear-gradient(#d6f1ff,#fff4d6);color:var(--ink);font-family:system-ui,"Segoe UI",Tahoma,sans-serif;display:flex;justify-content:center;overflow-x:hidden}
 main{width:100%;max-width:560px;padding:16px 14px 40px}
 h1,h2{font-family:Lalezar,system-ui,sans-serif;font-weight:400;margin:6px 0}
 h1{font-size:2.2rem;text-align:center}
-.mascot{font-size:4rem;text-align:center;animation:bob 2s ease-in-out infinite}
+.mascot{font-size:4rem;text-align:center;animation:bob 2s ease-in-out infinite;line-height:1.1}
 @keyframes wig{20%{transform:rotate(-8deg)}40%{transform:rotate(8deg)}60%{transform:none}}
 @keyframes bob{50%{transform:translateY(-8px)}}
-@media(prefers-reduced-motion:reduce){.blank,.mascot,.pop{animation:none!important}}
 .card{background:#fff;border-radius:24px;padding:16px;margin:12px 0;box-shadow:0 4px 0 #0001}
 .ay{font-family:"Amiri Quran",serif;font-size:1.75rem;line-height:2.2;text-align:center}
 .tag{font-size:.9rem;opacity:.7;text-align:center}
@@ -29,65 +28,130 @@ button.big{width:100%;font-size:1.2rem;background:var(--vio);color:#fff;margin-t
 .blank{display:inline-grid;place-items:center;min-width:52px;height:52px;border-radius:26px;background:var(--sky);border:3px dashed var(--vio);font-size:1.2rem;margin:4px}
 .blank{animation:wig 2.4s ease-in-out 3;padding:0 16px;box-shadow:none;cursor:pointer}
 .hint{flex-basis:100%;font-family:"Amiri Quran",serif;font-size:1.5rem;line-height:2;background:#fff4c2;border-radius:16px;padding:6px 12px;text-align:center;font-weight:400}
-.sp button{padding:8px 12px;background:#eef}.lv button{flex:1;background:#eef}.lv button.on,.sp button.on{background:var(--vio);color:#fff}
+.sp button{padding:8px 12px;background:#eef}.lv button,.grp button{flex:1;background:#eef}.lv button.on,.sp button.on{background:var(--vio);color:#fff}
+.lv,.grp{align-items:stretch}.lv button,.grp button{padding:10px 6px}.grp button{font-size:.92rem}
 .pop{animation:pop .4s}@keyframes pop{0%{transform:scale(.8)}60%{transform:scale(1.08)}}
 .hide{display:none!important}
 #fx{position:fixed;inset:0;z-index:9;display:grid;place-items:center;background:#fffd;text-align:center;overflow:hidden}
 .fxc{position:relative;padding:20px}.big5{font-size:6rem}
+.grow2{display:flex;align-items:center;justify-content:center;gap:12px;font-size:4.6rem;white-space:nowrap}.grow2 b{font-size:2.2rem;opacity:.5}
 .pt{position:absolute;bottom:-40px;font-style:normal;animation:rise 1.6s ease-out forwards}
 @keyframes rise{to{transform:translateY(-110vh) rotate(25deg)}}
-@media(prefers-reduced-motion:reduce){.pt{display:none}}
-select{width:100%;background:#fff;margin:8px 0}
 #say{text-align:center;font-weight:700;min-height:1.6em}
+
+/* الشريط العلوي: السلسلة اليومية + الكتكوتة + مجموع النجوم */
+.hero{display:flex;align-items:center;justify-content:center;gap:14px}
+.pill{background:#fff;border-radius:999px;padding:7px 14px;font-weight:800;box-shadow:0 3px 0 #0001;white-space:nowrap}
+.pill small{font-weight:600;opacity:.6}
+.growbar{height:12px;background:#eef;border-radius:9px;overflow:hidden;margin:8px auto 2px;max-width:260px}
+.growbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--sun),var(--pink));border-radius:9px;transition:width .8s}
+.toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:10;background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;font-weight:700;box-shadow:0 6px 18px #0003;max-width:92vw;text-align:center}
+details.card summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+details.card summary::-webkit-details-marker{display:none}
+details.card summary::after{content:"▾";font-size:1.3rem;opacity:.5}
+details[open].card summary::after{content:"▴"}
+
+/* خريطة الرحلة */
+.map{position:relative;margin:4px 0 24px}
+.map svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.road{fill:none;stroke:#fff3c4;stroke-width:30;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.dash{fill:none;stroke:#fff;stroke-width:6;stroke-linecap:round;stroke-dasharray:1 16;vector-effect:non-scaling-stroke}
+.isl{position:absolute;width:112px;margin-left:-56px;transform:translateY(-36px);padding:0;background:none;box-shadow:none;display:flex;flex-direction:column;align-items:center;gap:3px}
+.isl:active{transform:translateY(-33px)}
+.isl b{display:grid;place-items:center;width:72px;height:72px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff9,transparent 45%),var(--c);border:4px solid #fff;box-shadow:0 0 0 5px #ffffff80,0 7px 0 #0002;font-family:Lalezar,system-ui,sans-serif;font-weight:400;font-size:1.7rem;color:var(--ink)}
+.isl.gold b{border-color:var(--sun);box-shadow:0 0 0 5px #ffd65c99,0 7px 0 #0002}
+.isl .nm{background:#fff;border-radius:999px;padding:2px 12px;font-size:.95rem;box-shadow:0 2px 0 #0001;white-space:nowrap}
+.isl .st{font-size:.85rem;letter-spacing:1px;line-height:1}
+.off{filter:grayscale(1);opacity:.28;font-style:normal}
+.isl .crown{position:absolute;top:-16px;font-size:1.4rem;font-style:normal}
+.isl .me{position:absolute;top:-6px;left:-14px;font-size:2.1rem;font-style:normal;animation:bob 1.6s ease-in-out infinite}
+.juz{position:absolute;left:50%;transform:translate(-50%,-50%);background:var(--vio);color:#fff;font-family:Lalezar,system-ui,sans-serif;font-size:1.3rem;padding:6px 22px;border-radius:16px;box-shadow:0 4px 0 #0002;white-space:nowrap}
+.deco{position:absolute;transform:translate(-50%,-50%);font-size:1.7rem;opacity:.55;pointer-events:none;font-style:normal}
+
+/* زر المايك ونتيجة الاستماع */
+.micbox{text-align:center;margin-top:10px;border-top:2px dashed #eef;padding-top:12px}
+.mic{width:96px;height:96px;border-radius:50%;padding:0;font-size:2.6rem;background:var(--pink);box-shadow:0 5px 0 #0002,0 0 0 calc(var(--lv,0) * 28px) #ff8fa866;transition:box-shadow .08s}
+.mic.on{background:#ff6b8b}
+.mic:disabled{opacity:.75;cursor:wait}
+#micL{margin-top:8px;opacity:.85;font-weight:600;min-height:1.4em}
+.bar{height:12px;background:#eef;border-radius:9px;overflow:hidden;margin:8px auto 2px;max-width:280px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--mint),var(--vio));transition:width .3s}
+.spin{display:inline-block;animation:spin 1.1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.res{text-align:center;font-weight:800;border-radius:14px;padding:8px 10px;margin-bottom:6px}
+.res.good{background:#dcfce7;color:#166534}.res.bad{background:#ffe4e6;color:#9f1239}
+.w-ok{color:#15803d}.w-bad{color:#e11d48;background:#fff0f2;border-radius:10px}.w-miss{color:#a3a3b8}
+.legend{gap:6px;font-size:.85rem;margin:2px 0 6px}.legend span{border-radius:999px;padding:2px 10px;font-weight:700}
+.legend .w-ok{background:#dcfce7}.legend .w-bad{background:#ffe4e6}.legend .w-miss{background:#f1f1f6}
+.es{font-size:1.2rem;margin:6px 0}.es b{color:var(--vio)}
+@media(prefers-reduced-motion:reduce){.blank,.mascot,.pop,.isl .me,.spin{animation:none!important}.pt{display:none}}
 </style>
 </head>
 <body>
 <div id="fx" class="hide" aria-live="polite"></div>
+<div id="toast" class="toast hide" role="status"></div>
 <main>
-<div class="mascot">🐥</div>
+<div class="hero">
+  <span class="pill" id="stk" title="أيام المراجعة ورا بعض">🔥 ٠</span>
+  <div class="mascot" id="mas">🥚</div>
+  <span class="pill" id="tot" title="مجموع النجوم">⭐ ٠</span>
+</div>
 <h1>مراجعة جزء تبارك وجزء عمّ</h1>
 <p class="tag">من سورة الملك إلى سورة الناس</p>
 <p id="say">أهلاً يا بطلة! جاهزة نراجع؟</p>
 
 <section id="home">
   <div class="card">
-    <div id="msg" class="tag">جاري التحميل…</div>
+    <div class="growbar" aria-hidden="true"><i id="gb"></i></div>
+    <div class="tag" id="gl" style="opacity:.85;font-weight:700"></div>
+    <div id="msg" class="tag" style="margin-top:6px">جاري التحميل…</div>
     <div class="tag" style="margin:6px 0">اختاري المستوى:</div>
     <div class="row lv" id="lv"><button data-n="1">🌱 سهل<br><small>آية واحدة</small></button><button data-n="3" class="on">🌟 وسط<br><small>٣ آيات</small></button><button data-n="5">🔥 صعب<br><small>٥ آيات</small></button></div>
-    <select id="sur" aria-label="اختاري السورة"></select>
-    <button class="big" id="go" disabled>يلا نبدأ ⭐</button>
+    <div class="tag" style="margin:12px 0 6px">اختاري سورة من الخريطة 🗺️ أو راجعي:</div>
+    <div class="row grp" id="grp"><button data-g="0">🌍 كل السور</button><button data-g="t">📗 جزء تبارك</button><button data-g="a">📘 جزء عمّ</button></div>
   </div>
-  <div class="card"><h2>كيف نلعب؟</h2>
+  <details class="card" id="how"><summary><h2>كيف نلعب؟</h2></summary>
     <ol style="line-height:2;padding-inline-start:22px;margin:4px 0">
-      <li>أعطيك آية، واسمعيها من القارئ 🔊</li>
+      <li>اختاري سورة من الخريطة، وأعطيك آية، واسمعيها من القارئ 🔊</li>
       <li>اقرئي الآيات اللي بعدها بصوتك: آية في السهل، ٣ في الوسط، ٥ في الصعب.</li>
+      <li><b>🎤 اضغطي على المايك واقرئي، ولما تخلصين اضغطي مرة ثانية.</b> أسمعك وألوّن الكلمات: الأخضر صح، الأحمر غلط، الرمادي نسيتيه. إذا ٩٠٪ أو أكثر صح تاخذين النجمة!</li>
       <li><b>💡 نسيتي؟ اضغطي على أي دائرة (؟) وتطلع لك الآية كتلميح بدون صوت.</b> على كل دائرة رقم الآية. تقدرين تفتحين دائرة وحدة وتحاولين تتذكرين الباقي.</li>
-      <li>اضغطي «أرني الجواب»: يطلع النص ويقرأه القارئ.</li>
-      <li>اختاري 😀 قرأتها صح أو 🤔 أحتاج أراجع.</li>
+      <li>أو اضغطي «أرني الجواب»: يطلع النص ويقرأه القارئ، واختاري 😀 قرأتها صح أو 🤔 أحتاج أراجع.</li>
+      <li>كل سورة فيها ٣ نجوم ⭐، وكل ما جمعتي نجوم أكثر تكبر صاحبتك 🥚←🐣←🐥←🐤←🦅، وراجعي كل يوم عشان تكبر 🔥</li>
     </ol>
-    <div class="tag">⏸ يوقف الصوت · ×1.25 يسرّع القراءة · ⏭ يتخطى السؤال</div></div>
+    <div class="tag">⏸ يوقف الصوت · ×1.25 يسرّع القراءة · ⏭ يتخطى السؤال</div></details>
+  <div class="map" id="map"></div>
 </section>
 
 <section id="game" class="hide">
   <div class="top"><span id="pg"></span><span id="sc">⭐ 0</span></div>
   <div class="card"><div class="tag" id="who"></div><div class="ay" id="anchor"></div>
     <div class="row"><button class="ghost" id="hear">🔊 اسمعي الآية</button></div></div>
-  <div class="card"><h2 id="ask" style="text-align:center"></h2><div id="tip" class="tag" style="background:#fff4c2;border-radius:14px;padding:6px 10px;margin-bottom:6px;opacity:1">💡 اضغطي على أي دائرة (؟) لتلميح بدون صوت</div><div class="row" id="blanks"></div></div>
-  <div class="card hide pop" id="ans"><div class="ay" id="ansTxt"></div>
+  <div class="card"><h2 id="ask" style="text-align:center"></h2><div id="tip" class="tag" style="background:#fff4c2;border-radius:14px;padding:6px 10px;margin-bottom:6px;opacity:1">💡 اضغطي على أي دائرة (؟) لتلميح بدون صوت</div><div class="row" id="blanks"></div>
+    <div class="micbox" id="micbox">
+      <button class="mic" id="mic" aria-label="سجّلي قراءتك"><span id="micI">🎤</span></button>
+      <div id="micL" class="tag"></div>
+      <div class="bar hide" id="bar"><i></i></div><div class="tag hide" id="barL"></div>
+    </div></div>
+  <div class="card hide pop" id="ans"><div class="res hide" id="res"></div><div class="ay" id="ansTxt"></div>
+    <div class="row legend hide" id="leg"><span class="w-ok">صح</span><span class="w-bad">غلط</span><span class="w-miss">ناقص</span></div>
     <div class="row"><button class="ghost" id="again">🔁 أعيدي الجواب</button></div></div>
   <div class="row sp" id="speed" aria-label="سرعة الصوت"></div>
   <div class="row" style="margin-top:8px"><button class="ghost" id="pz">⏸ إيقاف الصوت</button></div>
   <button class="big" id="show">أرني الجواب ✨</button>
+  <button class="big hide" id="retry" style="background:var(--pink);color:var(--ink)">🎤 حاولي مرة ثانية</button>
+  <button class="big hide" id="nextB" style="background:var(--mint);color:var(--ink)">التالي ⏭</button>
+  <div class="row hide" id="judge" style="margin-top:8px"><button class="ok" id="yes">😀 قرأتها صح</button><button class="no" id="nope">🤔 أحتاج أراجع</button></div>
   <div class="row" id="nav" style="margin-top:12px"><button class="ghost" id="prev">⏮ السابق</button><button class="ghost" id="skip">⏭ السؤال اللي بعده</button><button class="ghost" id="fin">🏁 إنهاء</button></div>
-  <div class="row hide" id="judge"><button class="ok" id="yes">😀 قرأتها صح</button><button class="no" id="nope">🤔 أحتاج أراجع</button></div>
 </section>
 
 <section id="end" class="hide">
-  <div class="card" style="text-align:center"><h2 id="endT"></h2><div id="endS" class="ay"></div>
-    <button class="big hide" id="redo">نعيد الصعبة 💪</button><button class="big" id="home2" style="background:var(--mint);color:var(--ink)">نرجع للبداية</button></div>
+  <div class="card" style="text-align:center"><h2 id="endT"></h2><div id="endS" class="ay"></div><div id="endStars"></div>
+    <button class="big hide" id="redo">نعيد الصعبة 💪</button><button class="big" id="home2" style="background:var(--mint);color:var(--ink)">نرجع للخريطة 🗺️</button></div>
 </section>
 </main>
 
+<script src="match.js"></script>
+<script src="listen.js"></script>
 <script>
 // ===== إعدادات الصوت: القارئ الحذيفي (غيّري هنا لقارئ آخر) =====
 const REC={ev:'Hudhaify_128kbps',ic:'ar.hudhaify'};
@@ -119,6 +183,8 @@ function play(list,done){
 }
 function say(t){$('#say').textContent=t}
 function show(id){['home','game','end'].forEach(x=>$('#'+x).classList.toggle('hide',x!==id))}
+let toastT;
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.remove('hide');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.add('hide'),3500)}
 
 // سرعة الصوت
 [0.75,1,1.25,1.5].forEach(v=>{
@@ -127,6 +193,74 @@ function show(id){['home','game','end'].forEach(x=>$('#'+x).classList.toggle('hi
     document.querySelectorAll('#speed button').forEach(x=>x.classList.toggle('on',x===b))};
   if(v===1)b.classList.add('on');$('#speed').append(b);
 });
+
+// ===== التقدم المحفوظ: النجوم، الأيام ورا بعض، ونمو الكتكوتة (localStorage) =====
+// مراحل النمو حسب مجموع النجوم (أعلى شيء ٤٨ سورة × ٣ = ١٤٤) — غيّري الأرقام هنا
+const GROW=[[0,'🥚','بيضة صغيرة'],[3,'🐣','كتكوتة تفقس'],[15,'🐥','كتكوتة شاطرة'],[40,'🐤','كتكوتة كبيرة'],[90,'🦅','نسر قوي']];
+const STARS=[0.3,0.6,0.9]; // نسبة الأسئلة الصحيحة في السورة: نجمة، نجمتين، ثلاث
+const PK='qgame_progress_v1';
+let P={stars:{},streak:0,day:'',stage:0,at:0,N:3};
+try{Object.assign(P,JSON.parse(localStorage.getItem(PK)||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem(PK,JSON.stringify(P))}catch(e){}};
+const total=()=>Object.values(P.stars).reduce((a,b)=>a+b,0);
+const stageOf=t=>GROW.reduce((k,g,i)=>t>=g[0]?i:k,0);
+const dayKey=d=>`${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+const yday=()=>{const d=new Date();d.setDate(d.getDate()-1);return dayKey(d)};
+const streak=()=>P.day===dayKey(new Date())||P.day===yday()?P.streak:0;
+const stars=n=>'⭐'.repeat(n)+'<i class="off">⭐</i>'.repeat(3-n);
+function hud(){
+  const t=total(),s=stageOf(t),nx=GROW[s+1],k=streak();
+  const m=$('#mas');m.textContent=GROW[s][1];m.style.fontSize=(3.3+s*.35)+'rem';
+  $('#stk').innerHTML=`🔥 ${ar(k)} <small>${k==1?'يوم':'أيام'}</small>`;
+  $('#tot').innerHTML=`⭐ ${ar(t)}`;
+  $('#gl').textContent=nx?`${GROW[s][1]} ${GROW[s][2]} — باقي ${ar(nx[0]-t)} ⭐ وتصير ${nx[1]}`:`${GROW[s][1]} وصلتِ لأعلى مرحلة، ما شاء الله!`;
+  $('#gb').style.width=(nx?(t-GROW[s][0])/(nx[0]-GROW[s][0])*100:100)+'%';
+}
+// راجعت اليوم: نزيد الأيام ورا بعض مرة وحدة في اليوم
+function reviewed(){
+  const t=dayKey(new Date());if(P.day===t)return;
+  P.streak=P.day===yday()?P.streak+1:1;P.day=t;save();hud();
+  toast(P.streak>1?`🔥 ${ar(P.streak)} أيام ورا بعض! ما شاء الله، كمّلي بكرة`:'🔥 راجعتِ اليوم! تعالي بكرة عشان تزيد النار');
+}
+// نتيجة الجلسة لكل سورة: أفضل نتيجة تعطي النجوم
+let sess={},pend=null;
+function mark(q){
+  const s=q.a.surah.number,r=sess[s];if(!r)return;
+  r.ok.add(q.a.number);
+  const st=STARS.filter(v=>r.ok.size/r.t>=v-1e-9).length;
+  if(st>(P.stars[s]||0)){P.stars[s]=st;r.up=1}
+  const g=stageOf(total());if(g>P.stage){pend=[P.stage,g];P.stage=g}
+  save();hud();
+}
+const PT=['❤️','👏','🎉','⭐','💖'];
+function confetti(){let p='';for(let i=0;i<24;i++)p+=`<i class="pt" style="left:${Math.random()*100}%;animation-delay:${Math.random()*.7}s;font-size:${22+Math.random()*22}px">${PT[i%5]}</i>`;return p}
+function fx(html,ms,fn){const f=$('#fx');f.innerHTML=html;f.classList.remove('hide');
+  if(ms)setTimeout(()=>{f.classList.add('hide');fn()},ms)}
+// احتفال صغير لما تكبر الكتكوتة
+function grown(fn){
+  if(!pend)return fn();
+  const[a,b]=pend;pend=null;
+  fx(confetti()+`<div class="fxc"><div class="grow2"><span>${GROW[a][1]}</span><b>←</b><span class="pop">${GROW[b][1]}</span></div><h2>كبرت صاحبتك! صارت ${GROW[b][2]} 🎉</h2><p class="tag" style="opacity:1">مجموع نجومك ⭐ ${ar(total())}</p></div>`,2800,fn);
+}
+
+// ===== خريطة الرحلة: من الملك إلى الناس =====
+const COL=['#8fe3c0','#ffd65c','#ff8fa8','#9fd8ff','#c9b8ff'],DECO=['🌴','☁️','🐚','🌸','🌊','🌼','🐠','⛵'];
+function renderMap(){
+  const GAP=128;let y=60,html='',pts=[];
+  for(let n=67;n<=114;n++){
+    if(n===67||n===78){html+=`<div class="juz" style="top:${y}px">${n===67?'📗 جزء تبارك':'📘 جزء عمّ'}</div>`;y+=80}
+    const i=n-67,x=50+30*Math.sin(i*.9),st=P.stars[n]||0;
+    pts.push([x,y]);
+    html+=`<button class="isl${st===3?' gold':''}" data-s="${n}" style="left:${x.toFixed(1)}%;top:${y}px;--c:${COL[i%5]}" aria-label="سورة ${NAMES[i]}، ${ar(st)} من ٣ نجوم">`
+      +`${st===3?'<i class="crown">👑</i>':''}${(P.at||67)===n?`<i class="me">${GROW[stageOf(total())][1]}</i>`:''}<b>${ar(n)}</b><span class="nm">${NAMES[i]}</span><span class="st">${stars(st)}</span></button>`;
+    if(i%3===1)html+=`<i class="deco" style="left:${(x>50?x-36:x+36).toFixed(1)}%;top:${y+20}px">${DECO[i%DECO.length]}</i>`;
+    y+=GAP;
+  }
+  let d=`M${pts[0][0].toFixed(1)} ${pts[0][1]}`;
+  for(let k=1;k<pts.length;k++){const[a,b]=pts[k-1],[c,e]=pts[k],h=(e-b)/2;d+=` C${a.toFixed(1)} ${b+h} ${c.toFixed(1)} ${e-h} ${c.toFixed(1)} ${e}`}
+  const m=$('#map');m.style.height=(y-30)+'px';
+  m.innerHTML=`<svg viewBox="0 0 100 ${y-30}" preserveAspectRatio="none" aria-hidden="true"><path class="road" d="${d}"/><path class="dash" d="${d}"/></svg>`+html;
+}
 
 // تحميل النص من الإنترنت (وجوه المصحف 572–599)
 const NAMES=['الملك','القلم','الحاقة','المعارج','نوح','الجن','المزمل','المدثر','القيامة','الإنسان','المرسلات','النبأ','النازعات','عبس','التكوير','الانفطار','المطففين','الانشقاق','البروج','الطارق','الأعلى','الغاشية','الفجر','البلد','الشمس','الليل','الضحى','الشرح','التين','العلق','القدر','البينة','الزلزلة','العاديات','القارعة','التكاثر','العصر','الهمزة','الفيل','قريش','الماعون','الكوثر','الكافرون','النصر','المسد','الإخلاص','الفلق','الناس'];
@@ -144,7 +278,6 @@ async function getPage(p){
   }
 }
 async function load(){
-  $('#go').disabled=true;
   $('#msg').textContent='جاري التحميل… 0 من 43';
   try{
     let c=localStorage.getItem('qgame_v2');
@@ -162,15 +295,15 @@ async function load(){
       A.sort((x,y)=>x.number-y.number);
       try{localStorage.setItem('qgame_v2',JSON.stringify(A))}catch(e){}
     }
-    const s=$('#sur');
-    s.innerHTML='<option value="0">كل السور (الملك إلى الناس)</option><option value="t">جزء تبارك كامل (الملك إلى المرسلات)</option><option value="a">جزء عمّ كامل (النبأ إلى الناس)</option>';
-    [...new Map(A.map(a=>[a.surah.number,nm(a)]))].forEach(([n,t])=>s.insertAdjacentHTML('beforeend',`<option value="${n}">سورة ${t}</option>`));
-    $('#msg').textContent='اختاري السورة ثم ابدئي';$('#go').disabled=false;
+    $('#msg').classList.add('hide');
   }catch(e){
-    $('#msg').innerHTML='ما قدرت أحمّل النص. تأكدي من الإنترنت وافتحي الملف من المتصفح <button id="retry">حاولي مرة ثانية</button>';
-    $('#retry').onclick=load;
+    $('#msg').innerHTML='ما قدرت أحمّل النص. تأكدي من الإنترنت وافتحي الملف من المتصفح <button id="retry2">حاولي مرة ثانية</button>';
+    $('#retry2').onclick=load;
   }
 }
+// النص البسيط بدون تشكيل (للمقارنة مع قراءتها)
+let CL=null;
+const getClean=()=>CL||(CL=fetch('data/quran-simple-clean-67-114.json').then(r=>{if(!r.ok)throw 0;return r.json()}).catch(e=>{CL=null;throw e}));
 
 // بناء الأسئلة: ٥ أسئلة لكل وجه، بالترتيب من أول الوجه إلى آخره، وكل سؤال آية + (١ أو ٣ أو ٥) آيات بعدها حسب المستوى
 function build(sur){
@@ -186,59 +319,144 @@ function build(sur){
   return out;
 }
 
-function start(list){
-  Q=list;qi=0;score=0;missed=[];$('#sc').textContent='⭐ 0';show('game');ask();
+function start(list,redo){
+  if(!redo){sess={};list.forEach(q=>{const s=q.a.surah.number;(sess[s]=sess[s]||{t:0,ok:new Set()}).t++})}
+  Q=list;qi=0;score=0;missed=[];$('#sc').textContent='⭐ 0';show('game');scrollTo(0,0);ask();
+  // نجهّز المستمع بالخلفية إذا كان متنزّل من قبل
+  if(Listen.supported){getClean().catch(()=>{});Listen.cached().then(c=>{if(c)getModel(true).catch(()=>{})})}
 }
 $('#blanks').onclick=e=>{
   const b=e.target.closest('[data-i]');if(!b)return;
   if(b.classList.contains('blank')){b.className='hint';b.textContent=fmt(Q[qi].ans[+b.dataset.i])}
   else{b.className='blank';b.textContent='﴿'+ar(Q[qi].ans[+b.dataset.i].numberInSurah)+'﴾'}
 };
+const reAnim=c=>{c.style.animation='none';void c.offsetWidth;c.style.animation=''};
 function ask(){
-  const q=Q[qi];
+  const q=Q[qi];micReset();
   $('#pg').textContent=`وجه ${q.p} · سؤال ${qi+1} من ${Q.length}`;
   $('#who').textContent=`سورة ${nm(q.a)}`;
   $('#anchor').textContent=fmt(q.a);
   $('#ask').textContent=q.mix?'أكملي الآية اللي قبلها و'+(q.ans.length==2?'الآية اللي بعدها':'الآيتين اللي بعدها'):q.before?'ما الآية اللي قبلها؟':q.ans.length==1?'ما الآية اللي بعدها؟':`أكملي ${q.ans.length} آيات بعدها`;
-  $('#blanks').classList.remove('hide');$('#tip').classList.remove('hide');
+  $('#blanks').classList.remove('hide');$('#tip').classList.remove('hide');$('#micbox').classList.toggle('hide',!Listen.supported);
   $('#blanks').innerHTML=q.ans.map((x,i)=>`<button class="blank" data-i="${i}" aria-label="تلميح">﴿${ar(x.numberInSurah)}﴾</button>`).join('');
-  $('#ans').classList.add('hide');$('#judge').classList.add('hide');$('#show').classList.remove('hide');
-  say('اقرئي بصوتك. تحتاجين تلميح؟ اضغطي على الدائرة 💡');
+  ['#ans','#judge','#res','#leg','#retry','#nextB'].forEach(s=>$(s).classList.add('hide'));$('#show').classList.remove('hide');
+  say(Listen.supported?'اقرئي بصوتك واضغطي 🎤 عشان أسمعك. تحتاجين تلميح؟ اضغطي على الدائرة 💡':'اقرئي بصوتك. تحتاجين تلميح؟ اضغطي على الدائرة 💡');
   play([q.a]);
 }
-$('#hear').onclick=()=>play([Q[qi].a]);
+$('#hear').onclick=()=>{if(mic===1)micReset();play([Q[qi].a])};
 $('#show').onclick=()=>{
-  const q=Q[qi];$('#blanks').classList.add('hide');$('#tip').classList.add('hide');
+  const q=Q[qi];micReset();$('#blanks').classList.add('hide');$('#tip').classList.add('hide');$('#micbox').classList.add('hide');
   const seq=q.mix?[q.ans[0],q.a,...q.ans.slice(1)]:q.ans;
   $('#ansTxt').innerHTML=seq.map(x=>x===q.a?`<span style="opacity:.45">${fmt(x)}</span>`:fmt(x)).join('<br>');
-  const c=$('#ans');c.classList.remove('hide');c.style.animation='none';void c.offsetWidth;c.style.animation='';
+  const c=$('#ans');c.classList.remove('hide');reAnim(c);
   $('#show').classList.add('hide');$('#judge').classList.remove('hide');
   say('اسمعي الجواب وقارنيه بقراءتك');
   play(seq);
 };
 $('#again').onclick=()=>{const q=Q[qi];play(q.mix?[q.ans[0],q.a,...q.ans.slice(1)]:q.ans)};
+
+// ===== 🎤 الاستماع لقراءتها =====
+let mic=0,micTok=0,recT=0,recI,modelP=null; // mic: 0 جاهز، 1 يسجّل، 2 يسمع
+const MB=$('#mic'),ML=$('#micL');
+const MIC0='اضغطي 🎤 واقرئي، ولما تخلصين اضغطي مرة ثانية';
+function micReset(){
+  micTok++;clearInterval(recI);if(mic===1)Listen.cancel();mic=0;
+  MB.disabled=false;MB.classList.remove('on');MB.style.setProperty('--lv',0);$('#micI').textContent='🎤';ML.textContent=MIC0;
+}
+function bar(p){
+  const on=p!=null&&p<1;$('#bar').classList.toggle('hide',!on);$('#barL').classList.toggle('hide',!on);
+  if(on){$('#bar i').style.width=(p*100).toFixed(0)+'%';$('#barL').textContent=`أجهّز المستمع لأول مرة… ${ar(Math.round(p*100))}٪ (مرة وحدة بس، بعدها يشتغل على طول)`}
+}
+// تنزيل النموذج أول مرة فقط، مع شريط تقدم
+function getModel(quiet){
+  if(!modelP){modelP=Listen.load(quiet?null:bar).then(()=>bar(1));modelP.catch(()=>{modelP=null;bar(1)})}
+  return modelP;
+}
+function micFail(t){mic=0;MB.disabled=false;MB.classList.remove('on');$('#micI').textContent='🎤';ML.textContent=t}
+MB.onclick=async()=>{
+  if(mic===2)return;
+  if(mic===1)return micStop();
+  Listen.unlock();au.pause();tok++; // نوقف القارئ عشان ما نسجّل صوته
+  const my=++micTok;MB.disabled=true;
+  try{await Listen.start(v=>MB.style.setProperty('--lv',Math.min(1,v*2.5).toFixed(2)))}
+  catch(e){MB.disabled=false;return micFail('ما قدرت أفتح المايك 🙈 اسمحي للمتصفح يستخدم المايك، أو اضغطي «أرني الجواب»')}
+  if(my!==micTok){Listen.cancel();return}
+  mic=1;MB.disabled=false;MB.classList.add('on');$('#micI').textContent='⏹';recT=Date.now();
+  const tick=()=>{const s=(Date.now()-recT)/1000|0;
+    ML.innerHTML=`أسمعك… 🎧 لما تخلصين اضغطي ⏹ · <span dir="ltr">${ar(s/60|0)}:${ar(String(s%60).padStart(2,'0'))}</span>`;if(s>=120)micStop()};
+  tick();recI=setInterval(tick,500);
+  getModel().catch(()=>{}); // يتجهز وهي تقرأ
+};
+async function micStop(){
+  clearInterval(recI);mic=2;MB.classList.remove('on');MB.style.setProperty('--lv',0);MB.disabled=true;
+  $('#micI').innerHTML='<span class="spin">⏳</span>';
+  const q=Q[qi],my=micTok;
+  let pcm;
+  try{pcm=await Listen.stop()}catch(e){return micFail('ما وصلني صوت 🙉 حاولي مرة ثانية')}
+  try{
+    if(!Listen.ready)ML.textContent='لحظة… أجهّز المستمع 🎧';
+    const[,clean]=await Promise.all([getModel(),getClean()]);
+    if(my!==micTok)return;
+    ML.textContent='أسمع قراءتك… 🎧';
+    const heard=await Listen.transcribe(pcm,(i,n)=>{if(my===micTok&&n>1)ML.textContent=`أسمع قراءتك… 🎧 ${ar(i+1)} من ${ar(n)}`});
+    if(my!==micTok||q!==Q[qi])return;
+    micDone(q,heard,clean);
+  }catch(e){
+    console.error(e);
+    if(my===micTok)micFail(navigator.onLine===false&&!Listen.ready?'أحتاج إنترنت أول مرة عشان أجهّز المستمع 📶':'ما قدرت أسمعك هالمرة 😕 حاولي مرة ثانية أو اضغطي «أرني الجواب»');
+  }
+}
+function micDone(q,heard,clean){
+  micFail(MIC0);reviewed();
+  if(!Match.words(heard).length)return micFail('ما سمعت صوتك 🙉 قرّبي الجوال وارفعي صوتك شوي، وحاولي مرة ثانية');
+  const C=a=>clean.ayahs[a.number-clean.first],exp=q.ans.map(C);
+  // آيات من نفس السورة بنفس العدد: نكشف لو قرأت آيات تشبهها
+  const sa=A.filter(a=>a.surah.number===q.a.surah.number),k=q.ans.length,alts=[];
+  for(let i=0;i+k<=sa.length;i++)if(sa[i]!==q.ans[0])alts.push(sa.slice(i,i+k).map(C));
+  const g=Match.judge(exp,heard,alts),pct=Math.round(g.pct*100);
+  $('#blanks').classList.add('hide');$('#tip').classList.add('hide');$('#micbox').classList.add('hide');$('#show').classList.add('hide');
+  $('#ansTxt').innerHTML=q.ans.map((x,i)=>Match.paint(x.text,g.ayahs[i]).map(w=>w.st?`<span class="w-${w.st}">${w.t}</span>`:w.t).join(' ')+` ﴿${ar(x.numberInSurah)}﴾`).join('<br>');
+  $('#leg').classList.remove('hide');
+  const c=$('#ans'),res=$('#res');c.classList.remove('hide');reAnim(c);res.classList.remove('hide');
+  if(g.pass){
+    res.className='res good';res.textContent=`🎤 ${ar(pct)}٪ من الكلمات صح — ما شاء الله!`;
+    win();au.pause();tok++;
+    fx(confetti()+`<div class="fxc"><div class="big5 pop">🎤</div><h2>${['ما شاء الله! 🌟','ممتازة! 🎉','أحسنتِ يا بطلة! 💪'][score%3]}</h2><p class="tag" style="opacity:1;font-size:1.2rem">${ar(pct)}٪ من الكلمات صح</p></div>`,1900,
+      ()=>grown(()=>{if(q!==Q[qi])return;$('#nextB').classList.remove('hide');say('اسمعي القارئ، وبعدها اضغطي «التالي» ⏭');play(q.ans)}));
+  }else{
+    res.className='res bad';
+    res.textContent=g.other?'قرأتِ آيات تشبهها 🤏 حاولي مرة ثانية':`حاولي مرة ثانية 💪 (${ar(pct)}٪ من الكلمات صح)`;
+    $('#retry').classList.remove('hide');$('#judge').classList.remove('hide');
+    say('اسمعي الجواب وشوفي الكلمات الملوّنة 👀');
+    play(q.ans);
+  }
+}
+$('#retry').onclick=ask;
+$('#nextB').onclick=()=>{au.pause();tok++;nextQ()};
+
 function nextQ(){
   qi++;
   if(qi<Q.length)return ask();
   finish();
 }
 function finish(){
-  au.pause();tok++;show('end');
+  micReset();au.pause();tok++;show('end');
   $('#endT').textContent=missed.length?'أحسنتِ! تعبتِ ما شاء الله':'ما شاء الله! كل الأسئلة صح 🎉';
   $('#endS').textContent='⭐'.repeat(Math.min(score,30))+` (${score} من ${Q.length})`;
+  const ss=Object.keys(sess).map(Number),up=ss.filter(s=>sess[s].up);
+  $('#endStars').innerHTML=ss.length<=3?ss.map(s=>`<div class="es">سورة ${NAMES[s-67]} ${stars(P.stars[s]||0)}${sess[s].up?' <b>جديد!</b>':''}</div>`).join('')
+    :up.length?`<div class="es">نجوم جديدة 🎉</div>`+up.map(s=>`<div class="es">${NAMES[s-67]} ${stars(P.stars[s])}</div>`).join(''):'';
   $('#redo').classList.toggle('hide',!missed.length);
   say('بارك الله فيك 💛');
+  grown(()=>{});
 }
-const PT=['❤️','👏','🎉','⭐','💖'];
-function fx(html,ms,fn){const f=$('#fx');f.innerHTML=html;f.classList.remove('hide');
-  if(ms)setTimeout(()=>{f.classList.add('hide');fn()},ms)}
+function win(){score++;$('#sc').textContent='⭐ '+score;mark(Q[qi]);reviewed()}
 $('#yes').onclick=()=>{
-  score++;$('#sc').textContent='⭐ '+score;au.pause();tok++;
-  let p='';for(let i=0;i<24;i++)p+=`<i class="pt" style="left:${Math.random()*100}%;animation-delay:${Math.random()*.7}s;font-size:${22+Math.random()*22}px">${PT[i%5]}</i>`;
-  fx(p+`<div class="fxc"><div class="big5 pop">👏</div><h2>${['ما شاء الله! 🌟','ممتازة! 🎉','أحسنتِ يا بطلة! 💪'][score%3]}</h2></div>`,1700,nextQ);
+  win();au.pause();tok++;
+  fx(confetti()+`<div class="fxc"><div class="big5 pop">👏</div><h2>${['ما شاء الله! 🌟','ممتازة! 🎉','أحسنتِ يا بطلة! 💪'][score%3]}</h2></div>`,1700,()=>grown(nextQ));
 };
 $('#nope').onclick=()=>{
-  au.pause();tok++;
+  au.pause();tok++;reviewed();
   fx('<div class="fxc"><div class="big5 pop">😢</div><h2>ما عليه! حاولي مرة ثانية 💪</h2><div class="row"><button id="again2">🔁 حاولي مرة ثانية</button><button class="ghost" id="cont">⏭ نكمل</button></div></div>');
   $('#again2').onclick=()=>{$('#fx').classList.add('hide');ask()};
   $('#cont').onclick=()=>{missed.push(Q[qi]);$('#fx').classList.add('hide');nextQ()};
@@ -246,12 +464,18 @@ $('#nope').onclick=()=>{
 $('#skip').onclick=()=>{say('تمام، السؤال اللي بعده ⏭');nextQ()};
 $('#prev').onclick=()=>{if(qi>0){qi--;ask()}};
 $('#fin').onclick=finish;
-$('#redo').onclick=()=>start(missed.slice());
-$('#home2').onclick=()=>{show('home');say('جاهزة نراجع مرة ثانية؟')};
-$('#lv').onclick=e=>{const b=e.target.closest('[data-n]');if(!b)return;N=+b.dataset.n;
-  document.querySelectorAll('#lv button').forEach(x=>x.classList.toggle('on',x===b))};
-$('#go').onclick=()=>{const q=build($('#sur').value);if(q.length)start(q)};
-load();
+$('#redo').onclick=()=>start(missed.slice(),true);
+$('#home2').onclick=()=>{show('home');renderMap();hud();say('جاهزة نراجع مرة ثانية؟');
+  const b=$(`.isl[data-s="${P.at}"]`);if(b)b.scrollIntoView({block:'center',behavior:'smooth'})};
+const setN=n=>{N=n;P.N=n;document.querySelectorAll('#lv button').forEach(x=>x.classList.toggle('on',+x.dataset.n===n))};
+$('#lv').onclick=e=>{const b=e.target.closest('[data-n]');if(!b)return;setN(+b.dataset.n);save()};
+const go=s=>{if(!A.length)return say('لحظة… ما زلت أحمّل الآيات ⏳');const q=build(s);if(q.length)start(q)};
+$('#grp').onclick=e=>{const b=e.target.closest('[data-g]');if(b)go(b.dataset.g)};
+$('#map').onclick=e=>{const b=e.target.closest('[data-s]');if(!b)return;P.at=+b.dataset.s;save();go(b.dataset.s)};
+
+setN([1,3,5].includes(P.N)?P.N:3);
+if(!P.day)$('#how').open=true;
+renderMap();hud();load();
 </script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 // Service worker: opens instantly from cache, refreshes in the background, works offline after the first visit.
-const CACHE = 'quran-review-v4';
+const CACHE = 'quran-review-v5';
 const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'icons/favicon-32.png'];
 
 self.addEventListener('install', e => {

@@ -3,7 +3,7 @@ plan: none
 phase: — GitHub Pages + PWA
 status: done
 tested: —
-updated: 2026-10-24
+updated: 2026-10-25
 
 ## About
 - Arabic Quran review game (Juz Tabarak + Juz Amma), static HTML/JS, RTL
@@ -14,10 +14,12 @@ updated: 2026-10-24
 ## Done
 - Published index.html (copy of quran-review-game.html) + manifest, 🐥 icons, sw.js
 
+- Surah picker: no default, pulsing purple dropdown, start button grey until picked
+
 ## Map
 - `quran-review-game.html` — original game file
 - `index.html` — published copy + PWA tags; keep in sync with the original
-- `sw.js` — cache name `quran-review-v4` (v3 was the 🎤 + map version, now rolled back); bump it when index.html changes
+- `sw.js` — cache name `quran-review-v5` (v3 was the 🎤 + map version, now rolled back); bump it when index.html changes
 - `icons/` — generated from Segoe UI Emoji 🐥
 
 ## Decisions

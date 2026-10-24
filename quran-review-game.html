@@ -64,7 +64,7 @@ button.big:disabled{background:#c8c6d6;color:#fff;cursor:not-allowed;box-shadow:
     <ol style="line-height:2;padding-inline-start:22px;margin:4px 0">
       <li>أعطيك آية، واسمعيها من القارئ 🔊</li>
       <li>اقرئي الآيات اللي بعدها بصوتك: آية في السهل، ٣ في الوسط، ٥ في الصعب.</li>
-      <li><b>💡 نسيتي؟ اضغطي على أي دائرة (؟) وتطلع لك الآية كتلميح بدون صوت.</b> على كل دائرة رقم الآية. تقدرين تفتحين دائرة وحدة وتحاولين تتذكرين الباقي.</li>
+      <li><b>💡 نسيتي؟ اضغطي على أي دائرة (؟) وتطلع لك الآية كتلميح.</b> على كل دائرة رقم الآية. تقدرين تفتحين دائرة وحدة وتحاولين تتذكرين الباقي.</li>
       <li>اضغطي «أرني الجواب»: يطلع النص ويقرأه القارئ.</li>
       <li>اختاري 😀 قرأتها صح أو 🤔 أحتاج أراجع.</li>
     </ol>
@@ -75,7 +75,7 @@ button.big:disabled{background:#c8c6d6;color:#fff;cursor:not-allowed;box-shadow:
   <div class="top"><span id="pg"></span><span id="sc">⭐ 0</span></div>
   <div class="card"><div class="tag" id="who"></div><div class="ay" id="anchor"></div>
     <div class="row"><button class="ghost" id="hear">🔊 اسمعي الآية</button></div></div>
-  <div class="card"><h2 id="ask" style="text-align:center"></h2><div id="tip" class="tag" style="background:#fff4c2;border-radius:14px;padding:6px 10px;margin-bottom:6px;opacity:1">💡 اضغطي على أي دائرة (؟) لتلميح بدون صوت</div><div class="row" id="blanks"></div></div>
+  <div class="card"><h2 id="ask" style="text-align:center"></h2><div id="tip" class="tag" style="background:#fff4c2;border-radius:14px;padding:6px 10px;margin-bottom:6px;opacity:1">💡 اضغطي على أي دائرة (؟) لتلميح</div><div class="row" id="blanks"></div></div>
   <div class="card hide pop" id="ans"><div class="ay" id="ansTxt"></div>
     <div class="row"><button class="ghost" id="again">🔁 أعيدي الجواب</button></div></div>
   <div class="row sp" id="speed" aria-label="سرعة الصوت"></div>
@@ -99,7 +99,7 @@ const shuf=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(p=>p[1]);
 const nm=a=>a.surah.name.replace(/^سُورَةُ\s*/,'');
 const ar=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
 const fmt=a=>`${a.text} ﴿${ar(a.numberInSurah)}﴾`;
-let N=3,A=[],Q=[],qi=0,score=0,missed=[],sp=1,tok=0;
+let N=3,A=[],Q=[],qi=0,score=0,missed=[],sp=1,tok=0,hp=-1;
 const au=new Audio(),pz=$('#pz');let usr=false;
 pz.onclick=()=>{
   if(!au.paused){au.pause();usr=true;pz.textContent='▶ كملي الصوت'}
@@ -109,7 +109,7 @@ pz.onclick=()=>{
 const url=(a,fb)=>fb?`https://cdn.islamic.network/quran/audio/128/${REC.ic}/${a.number}.mp3`
   :`https://everyayah.com/data/${REC.ev}/${pad(a.surah.number)}${pad(a.numberInSurah)}.mp3`;
 function play(list,done){
-  const t=++tok;let i=0;au.pause();
+  const t=++tok;let i=0;au.pause();hp=-1;
   const next=fb=>{
     if(t!==tok)return;
     if(i>=list.length){done&&done();return}
@@ -195,8 +195,8 @@ function start(list){
 }
 $('#blanks').onclick=e=>{
   const b=e.target.closest('[data-i]');if(!b)return;
-  if(b.classList.contains('blank')){b.className='hint';b.textContent=fmt(Q[qi].ans[+b.dataset.i])}
-  else{b.className='blank';b.textContent='﴿'+ar(Q[qi].ans[+b.dataset.i].numberInSurah)+'﴾'}
+  const i=+b.dataset.i;if(b.classList.contains('blank')){b.className='hint';b.textContent=fmt(Q[qi].ans[i]);play([Q[qi].ans[i]],()=>{hp=-1});hp=i}
+  else{if(hp===i){au.pause();tok++;hp=-1}b.className='blank';b.textContent='﴿'+ar(Q[qi].ans[+b.dataset.i].numberInSurah)+'﴾'}
 };
 function ask(){
   const q=Q[qi];

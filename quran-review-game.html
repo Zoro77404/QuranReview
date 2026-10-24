@@ -192,7 +192,7 @@ function start(list){
 $('#blanks').onclick=e=>{
   const b=e.target.closest('[data-i]');if(!b)return;
   if(b.classList.contains('blank')){b.className='hint';b.textContent=fmt(Q[qi].ans[+b.dataset.i])}
-  else{b.className='blank';b.textContent='؟ ﴿'+ar(Q[qi].ans[+b.dataset.i].numberInSurah)+'﴾'}
+  else{b.className='blank';b.textContent='﴿'+ar(Q[qi].ans[+b.dataset.i].numberInSurah)+'﴾'}
 };
 function ask(){
   const q=Q[qi];
@@ -201,7 +201,7 @@ function ask(){
   $('#anchor').textContent=fmt(q.a);
   $('#ask').textContent=q.mix?'أكملي الآية اللي قبلها و'+(q.ans.length==2?'الآية اللي بعدها':'الآيتين اللي بعدها'):q.before?'ما الآية اللي قبلها؟':q.ans.length==1?'ما الآية اللي بعدها؟':`أكملي ${q.ans.length} آيات بعدها`;
   $('#blanks').classList.remove('hide');$('#tip').classList.remove('hide');
-  $('#blanks').innerHTML=q.ans.map((x,i)=>`<button class="blank" data-i="${i}" aria-label="تلميح">؟ ﴿${ar(x.numberInSurah)}﴾</button>`).join('');
+  $('#blanks').innerHTML=q.ans.map((x,i)=>`<button class="blank" data-i="${i}" aria-label="تلميح">﴿${ar(x.numberInSurah)}﴾</button>`).join('');
   $('#ans').classList.add('hide');$('#judge').classList.add('hide');$('#show').classList.remove('hide');
   say('اقرئي بصوتك. تحتاجين تلميح؟ اضغطي على الدائرة 💡');
   play([q.a]);

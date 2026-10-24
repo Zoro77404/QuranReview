@@ -21,7 +21,7 @@ updated: 2026-10-24
 - `icons/` — generated from Segoe UI Emoji 🐥
 
 ## Decisions
-- 🎤 + journey map rolled back here; that version lives in private Zoro77404/QuranReview2 (Desktop\QuranReview2)
+- 🎤 + journey map rolled back here; that version lives in Zoro77404/QuranReview2 (test site https://zoro77404.github.io/QuranReview2/) (Desktop\QuranReview2)
 
 ## Later
 

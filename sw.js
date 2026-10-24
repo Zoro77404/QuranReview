@@ -1,0 +1,49 @@
+// Service worker: opens instantly from cache, refreshes in the background, works offline after the first visit.
+const CACHE = 'quran-review-v1';
+const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'icons/favicon-32.png'];
+
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
+});
+
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys()
+    .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+    .then(() => self.clients.claim()));
+});
+
+// Serve from cache right away, update the cache from the network for next time.
+function staleWhileRevalidate(req, key = req) {
+  return caches.open(CACHE).then(c => c.match(key).then(hit => {
+    const net = fetch(req).then(res => {
+      if (res && (res.ok || res.type === 'opaque')) c.put(key, res.clone());
+      return res;
+    }).catch(() => hit);
+    return hit || net;
+  }));
+}
+
+// Try the network first, fall back to the cached copy when offline.
+function networkFirst(req) {
+  return caches.open(CACHE).then(c => fetch(req).then(res => {
+    if (res && res.ok) c.put(req, res.clone());
+    return res;
+  }).catch(() => c.match(req)));
+}
+
+self.addEventListener('fetch', e => {
+  const req = e.request;
+  if (req.method !== 'GET') return;
+  const url = new URL(req.url);
+
+  if (req.mode === 'navigate') {
+    e.respondWith(staleWhileRevalidate(req, 'index.html'));
+  } else if (url.origin === location.origin) {
+    e.respondWith(staleWhileRevalidate(req));
+  } else if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
+    e.respondWith(staleWhileRevalidate(req));
+  } else if (url.hostname === 'api.alquran.cloud' || url.hostname === 'api.quran.com') {
+    e.respondWith(networkFirst(req));
+  }
+  // Recitation audio streams straight from the network.
+});

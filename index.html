@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مراجعة جزء تبارك وجزء عمّ</title>
+<meta name="theme-color" content="#d6f1ff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="مراجعة تبارك وعمّ">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Lalezar&display=swap" rel="stylesheet">
+<style>
+:root{--sky:#d6f1ff;--mint:#8fe3c0;--sun:#ffd65c;--pink:#ff8fa8;--ink:#2d2a55;--vio:#7a5cfa}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:linear-gradient(#d6f1ff,#fff4d6);color:var(--ink);font-family:system-ui,"Segoe UI",Tahoma,sans-serif;display:flex;justify-content:center}
+main{width:100%;max-width:560px;padding:16px 14px 40px}
+h1,h2{font-family:Lalezar,system-ui,sans-serif;font-weight:400;margin:6px 0}
+h1{font-size:2.2rem;text-align:center}
+.mascot{font-size:4rem;text-align:center;animation:bob 2s ease-in-out infinite}
+@keyframes wig{20%{transform:rotate(-8deg)}40%{transform:rotate(8deg)}60%{transform:none}}
+@keyframes bob{50%{transform:translateY(-8px)}}
+@media(prefers-reduced-motion:reduce){.blank,.mascot,.pop{animation:none!important}}
+.card{background:#fff;border-radius:24px;padding:16px;margin:12px 0;box-shadow:0 4px 0 #0001}
+.ay{font-family:"Amiri Quran",serif;font-size:1.75rem;line-height:2.2;text-align:center}
+.tag{font-size:.9rem;opacity:.7;text-align:center}
+button,select{font:inherit;font-weight:700;border:0;border-radius:18px;padding:12px 18px;cursor:pointer;color:var(--ink);background:var(--sun);box-shadow:0 4px 0 #0002}
+button:active{transform:translateY(3px);box-shadow:none}
+button:focus-visible,select:focus-visible{outline:3px solid var(--vio)}
+button.big{width:100%;font-size:1.2rem;background:var(--vio);color:#fff;margin-top:8px}
+.ok{background:var(--mint)}.no{background:var(--pink)}.ghost{background:#eef}
+.row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center}
+.top{display:flex;justify-content:space-between;font-weight:800}
+.blank{display:inline-grid;place-items:center;min-width:52px;height:52px;border-radius:26px;background:var(--sky);border:3px dashed var(--vio);font-size:1.2rem;margin:4px}
+.blank{animation:wig 2.4s ease-in-out 3;padding:0 16px;box-shadow:none;cursor:pointer}
+.hint{flex-basis:100%;font-family:"Amiri Quran",serif;font-size:1.5rem;line-height:2;background:#fff4c2;border-radius:16px;padding:6px 12px;text-align:center;font-weight:400}
+.sp button{padding:8px 12px;background:#eef}.lv button{flex:1;background:#eef}.lv button.on,.sp button.on{background:var(--vio);color:#fff}
+.pop{animation:pop .4s}@keyframes pop{0%{transform:scale(.8)}60%{transform:scale(1.08)}}
+.hide{display:none!important}
+#fx{position:fixed;inset:0;z-index:9;display:grid;place-items:center;background:#fffd;text-align:center;overflow:hidden}
+.fxc{position:relative;padding:20px}.big5{font-size:6rem}
+.pt{position:absolute;bottom:-40px;font-style:normal;animation:rise 1.6s ease-out forwards}
+@keyframes rise{to{transform:translateY(-110vh) rotate(25deg)}}
+@media(prefers-reduced-motion:reduce){.pt{display:none}}
+select{width:100%;background:#fff;margin:8px 0}
+#say{text-align:center;font-weight:700;min-height:1.6em}
+</style>
+</head>
+<body>
+<div id="fx" class="hide" aria-live="polite"></div>
+<main>
+<div class="mascot">🐥</div>
+<h1>مراجعة جزء تبارك وجزء عمّ</h1>
+<p class="tag">من سورة الملك إلى سورة الناس</p>
+<p id="say">أهلاً يا بطلة! جاهزة نراجع؟</p>
+
+<section id="home">
+  <div class="card">
+    <div id="msg" class="tag">جاري التحميل…</div>
+    <div class="tag" style="margin:6px 0">اختاري المستوى:</div>
+    <div class="row lv" id="lv"><button data-n="1">🌱 سهل<br><small>آية واحدة</small></button><button data-n="3" class="on">🌟 وسط<br><small>٣ آيات</small></button><button data-n="5">🔥 صعب<br><small>٥ آيات</small></button></div>
+    <select id="sur" aria-label="اختاري السورة"></select>
+    <button class="big" id="go" disabled>يلا نبدأ ⭐</button>
+  </div>
+  <div class="card"><h2>كيف نلعب؟</h2>
+    <ol style="line-height:2;padding-inline-start:22px;margin:4px 0">
+      <li>أعطيك آية، واسمعيها من القارئ 🔊</li>
+      <li>اقرئي الآيات اللي بعدها بصوتك: آية في السهل، ٣ في الوسط، ٥ في الصعب.</li>
+      <li><b>💡 نسيتي؟ اضغطي على أي دائرة (؟) وتطلع لك الآية كتلميح بدون صوت.</b> على كل دائرة رقم الآية. تقدرين تفتحين دائرة وحدة وتحاولين تتذكرين الباقي.</li>
+      <li>اضغطي «أرني الجواب»: يطلع النص ويقرأه القارئ.</li>
+      <li>اختاري 😀 قرأتها صح أو 🤔 أحتاج أراجع.</li>
+    </ol>
+    <div class="tag">⏸ يوقف الصوت · ×1.25 يسرّع القراءة · ⏭ يتخطى السؤال</div></div>
+</section>
+
+<section id="game" class="hide">
+  <div class="top"><span id="pg"></span><span id="sc">⭐ 0</span></div>
+  <div class="card"><div class="tag" id="who"></div><div class="ay" id="anchor"></div>
+    <div class="row"><button class="ghost" id="hear">🔊 اسمعي الآية</button></div></div>
+  <div class="card"><h2 id="ask" style="text-align:center"></h2><div id="tip" class="tag" style="background:#fff4c2;border-radius:14px;padding:6px 10px;margin-bottom:6px;opacity:1">💡 اضغطي على أي دائرة (؟) لتلميح بدون صوت</div><div class="row" id="blanks"></div></div>
+  <div class="card hide pop" id="ans"><div class="ay" id="ansTxt"></div>
+    <div class="row"><button class="ghost" id="again">🔁 أعيدي الجواب</button></div></div>
+  <div class="row sp" id="speed" aria-label="سرعة الصوت"></div>
+  <div class="row" style="margin-top:8px"><button class="ghost" id="pz">⏸ إيقاف الصوت</button></div>
+  <button class="big" id="show">أرني الجواب ✨</button>
+  <div class="row" id="nav" style="margin-top:12px"><button class="ghost" id="prev">⏮ السابق</button><button class="ghost" id="skip">⏭ السؤال اللي بعده</button><button class="ghost" id="fin">🏁 إنهاء</button></div>
+  <div class="row hide" id="judge"><button class="ok" id="yes">😀 قرأتها صح</button><button class="no" id="nope">🤔 أحتاج أراجع</button></div>
+</section>
+
+<section id="end" class="hide">
+  <div class="card" style="text-align:center"><h2 id="endT"></h2><div id="endS" class="ay"></div>
+    <button class="big hide" id="redo">نعيد الصعبة 💪</button><button class="big" id="home2" style="background:var(--mint);color:var(--ink)">نرجع للبداية</button></div>
+</section>
+</main>
+
+<script>
+// ===== إعدادات الصوت: القارئ الحذيفي (غيّري هنا لقارئ آخر) =====
+const REC={ev:'Hudhaify_128kbps',ic:'ar.hudhaify'};
+const $=s=>document.querySelector(s),pad=n=>String(n).padStart(3,'0');
+const shuf=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(p=>p[1]);
+const nm=a=>a.surah.name.replace(/^سُورَةُ\s*/,'');
+const ar=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+const fmt=a=>`${a.text} ﴿${ar(a.numberInSurah)}﴾`;
+let N=3,A=[],Q=[],qi=0,score=0,missed=[],sp=1,tok=0;
+const au=new Audio(),pz=$('#pz');let usr=false;
+pz.onclick=()=>{
+  if(!au.paused){au.pause();usr=true;pz.textContent='▶ كملي الصوت'}
+  else if(usr){usr=false;pz.textContent='⏸ إيقاف الصوت';au.play().catch(()=>{})}
+};
+
+const url=(a,fb)=>fb?`https://cdn.islamic.network/quran/audio/128/${REC.ic}/${a.number}.mp3`
+  :`https://everyayah.com/data/${REC.ev}/${pad(a.surah.number)}${pad(a.numberInSurah)}.mp3`;
+function play(list,done){
+  const t=++tok;let i=0;au.pause();
+  const next=fb=>{
+    if(t!==tok)return;
+    if(i>=list.length){done&&done();return}
+    au.src=url(list[i],fb);au.defaultPlaybackRate=sp;au.playbackRate=sp;
+    au.onended=()=>{i++;next(0)};
+    au.onerror=()=>{if(fb){i++;next(0)}else next(1)};
+    au.play().catch(()=>{});usr=false;pz.textContent='⏸ إيقاف الصوت';
+  };
+  next(0);
+}
+function say(t){$('#say').textContent=t}
+function show(id){['home','game','end'].forEach(x=>$('#'+x).classList.toggle('hide',x!==id))}
+
+// سرعة الصوت
+[0.75,1,1.25,1.5].forEach(v=>{
+  const b=document.createElement('button');b.textContent='×'+v;
+  b.onclick=()=>{sp=v;au.defaultPlaybackRate=v;au.playbackRate=v;
+    document.querySelectorAll('#speed button').forEach(x=>x.classList.toggle('on',x===b))};
+  if(v===1)b.classList.add('on');$('#speed').append(b);
+});
+
+// تحميل النص من الإنترنت (وجوه المصحف 572–599)
+const NAMES=['الملك','القلم','الحاقة','المعارج','نوح','الجن','المزمل','المدثر','القيامة','الإنسان','المرسلات','النبأ','النازعات','عبس','التكوير','الانفطار','المطففين','الانشقاق','البروج','الطارق','الأعلى','الغاشية','الفجر','البلد','الشمس','الليل','الضحى','الشرح','التين','العلق','القدر','البينة','الزلزلة','العاديات','القارعة','التكاثر','العصر','الهمزة','الفيل','قريش','الماعون','الكوثر','الكافرون','النصر','المسد','الإخلاص','الفلق','الناس'];
+const sn=n=>({number:n,name:NAMES[n-67]});
+const tmo=(u)=>{const c=new AbortController();const t=setTimeout(()=>c.abort(),9000);
+  return fetch(u,{signal:c.signal}).then(r=>{clearTimeout(t);if(!r.ok)throw 0;return r.json()})};
+async function getPage(p){
+  try{
+    const j=await tmo(`https://api.alquran.cloud/v1/page/${p}/quran-uthmani`);
+    return j.data.ayahs.map(a=>({number:a.number,numberInSurah:a.numberInSurah,text:a.text,page:a.page,surah:sn(a.surah.number)}));
+  }catch(e){
+    const j=await tmo(`https://api.quran.com/api/v4/verses/by_page/${p}?fields=text_uthmani&per_page=300`);
+    return j.verses.map(v=>{const[s,n]=v.verse_key.split(':').map(Number);
+      return{number:v.id,numberInSurah:n,text:v.text_uthmani,page:v.page_number,surah:sn(s)}});
+  }
+}
+async function load(){
+  $('#go').disabled=true;
+  $('#msg').textContent='جاري التحميل… 0 من 43';
+  try{
+    let c=localStorage.getItem('qgame_v2');
+    if(c)A=JSON.parse(c);
+    else{
+      const res=[],pages=Array.from({length:43},(_,i)=>562+i);let done=0;
+      const worker=async()=>{while(pages.length){const p=pages.shift();res.push(...await getPage(p));
+        $('#msg').textContent=`جاري التحميل… ${++done} من 43`}};
+      await Promise.all([worker(),worker(),worker(),worker()]);
+      A=[];
+      res.forEach(a=>{
+        if(a.surah.number<67||a.surah.number>114)return;
+        if(a.numberInSurah===1&&a.text.startsWith('بِسْمِ'))a.text=a.text.split(' ').slice(4).join(' ');
+        A.push(a)});
+      A.sort((x,y)=>x.number-y.number);
+      try{localStorage.setItem('qgame_v2',JSON.stringify(A))}catch(e){}
+    }
+    const s=$('#sur');
+    s.innerHTML='<option value="0">كل السور (الملك إلى الناس)</option><option value="t">جزء تبارك كامل (الملك إلى المرسلات)</option><option value="a">جزء عمّ كامل (النبأ إلى الناس)</option>';
+    [...new Map(A.map(a=>[a.surah.number,nm(a)]))].forEach(([n,t])=>s.insertAdjacentHTML('beforeend',`<option value="${n}">سورة ${t}</option>`));
+    $('#msg').textContent='اختاري السورة ثم ابدئي';$('#go').disabled=false;
+  }catch(e){
+    $('#msg').innerHTML='ما قدرت أحمّل النص. تأكدي من الإنترنت وافتحي الملف من المتصفح <button id="retry">حاولي مرة ثانية</button>';
+    $('#retry').onclick=load;
+  }
+}
+
+// بناء الأسئلة: ٥ أسئلة لكل وجه، بالترتيب من أول الوجه إلى آخره، وكل سؤال آية + (١ أو ٣ أو ٥) آيات بعدها حسب المستوى
+function build(sur){
+  const [lo,hi]=sur=='t'?[67,77]:sur=='a'?[78,114]:+sur?[+sur,+sur]:[67,114],inS=a=>a.surah.number>=lo&&a.surah.number<=hi;
+  const pages=[...new Set(A.filter(inS).map(a=>a.page))].sort((x,y)=>x-y),out=[];
+  const after=a=>{const i=A.indexOf(a),r=[];
+    for(let m=1;m<=N;m++){const b=A[i+m];if(b&&b.surah.number==a.surah.number)r.push(b);else break}return r};
+  pages.forEach(p=>{
+    const c=A.filter(a=>a.page==p&&inS(a)).map(a=>({a,ans:after(a)})).filter(x=>x.ans.length);
+    const n=Math.min(5,c.length);
+    for(let k=0;k<n;k++){const x=c[Math.floor(k*c.length/n)];out.push({p,a:x.a,ans:x.ans})}
+  });
+  return out;
+}
+
+function start(list){
+  Q=list;qi=0;score=0;missed=[];$('#sc').textContent='⭐ 0';show('game');ask();
+}
+$('#blanks').onclick=e=>{
+  const b=e.target.closest('[data-i]');if(!b)return;
+  if(b.classList.contains('blank')){b.className='hint';b.textContent=fmt(Q[qi].ans[+b.dataset.i])}
+  else{b.className='blank';b.textContent='؟ ﴿'+ar(Q[qi].ans[+b.dataset.i].numberInSurah)+'﴾'}
+};
+function ask(){
+  const q=Q[qi];
+  $('#pg').textContent=`وجه ${q.p} · سؤال ${qi+1} من ${Q.length}`;
+  $('#who').textContent=`سورة ${nm(q.a)}`;
+  $('#anchor').textContent=fmt(q.a);
+  $('#ask').textContent=q.mix?'أكملي الآية اللي قبلها و'+(q.ans.length==2?'الآية اللي بعدها':'الآيتين اللي بعدها'):q.before?'ما الآية اللي قبلها؟':q.ans.length==1?'ما الآية اللي بعدها؟':`أكملي ${q.ans.length} آيات بعدها`;
+  $('#blanks').classList.remove('hide');$('#tip').classList.remove('hide');
+  $('#blanks').innerHTML=q.ans.map((x,i)=>`<button class="blank" data-i="${i}" aria-label="تلميح">؟ ﴿${ar(x.numberInSurah)}﴾</button>`).join('');
+  $('#ans').classList.add('hide');$('#judge').classList.add('hide');$('#show').classList.remove('hide');
+  say('اقرئي بصوتك. تحتاجين تلميح؟ اضغطي على الدائرة 💡');
+  play([q.a]);
+}
+$('#hear').onclick=()=>play([Q[qi].a]);
+$('#show').onclick=()=>{
+  const q=Q[qi];$('#blanks').classList.add('hide');$('#tip').classList.add('hide');
+  const seq=q.mix?[q.ans[0],q.a,...q.ans.slice(1)]:q.ans;
+  $('#ansTxt').innerHTML=seq.map(x=>x===q.a?`<span style="opacity:.45">${fmt(x)}</span>`:fmt(x)).join('<br>');
+  const c=$('#ans');c.classList.remove('hide');c.style.animation='none';void c.offsetWidth;c.style.animation='';
+  $('#show').classList.add('hide');$('#judge').classList.remove('hide');
+  say('اسمعي الجواب وقارنيه بقراءتك');
+  play(seq);
+};
+$('#again').onclick=()=>{const q=Q[qi];play(q.mix?[q.ans[0],q.a,...q.ans.slice(1)]:q.ans)};
+function nextQ(){
+  qi++;
+  if(qi<Q.length)return ask();
+  finish();
+}
+function finish(){
+  au.pause();tok++;show('end');
+  $('#endT').textContent=missed.length?'أحسنتِ! تعبتِ ما شاء الله':'ما شاء الله! كل الأسئلة صح 🎉';
+  $('#endS').textContent='⭐'.repeat(Math.min(score,30))+` (${score} من ${Q.length})`;
+  $('#redo').classList.toggle('hide',!missed.length);
+  say('بارك الله فيك 💛');
+}
+const PT=['❤️','👏','🎉','⭐','💖'];
+function fx(html,ms,fn){const f=$('#fx');f.innerHTML=html;f.classList.remove('hide');
+  if(ms)setTimeout(()=>{f.classList.add('hide');fn()},ms)}
+$('#yes').onclick=()=>{
+  score++;$('#sc').textContent='⭐ '+score;au.pause();tok++;
+  let p='';for(let i=0;i<24;i++)p+=`<i class="pt" style="left:${Math.random()*100}%;animation-delay:${Math.random()*.7}s;font-size:${22+Math.random()*22}px">${PT[i%5]}</i>`;
+  fx(p+`<div class="fxc"><div class="big5 pop">👏</div><h2>${['ما شاء الله! 🌟','ممتازة! 🎉','أحسنتِ يا بطلة! 💪'][score%3]}</h2></div>`,1700,nextQ);
+};
+$('#nope').onclick=()=>{
+  au.pause();tok++;
+  fx('<div class="fxc"><div class="big5 pop">😢</div><h2>ما عليه! حاولي مرة ثانية 💪</h2><div class="row"><button id="again2">🔁 حاولي مرة ثانية</button><button class="ghost" id="cont">⏭ نكمل</button></div></div>');
+  $('#again2').onclick=()=>{$('#fx').classList.add('hide');ask()};
+  $('#cont').onclick=()=>{missed.push(Q[qi]);$('#fx').classList.add('hide');nextQ()};
+};
+$('#skip').onclick=()=>{say('تمام، السؤال اللي بعده ⏭');nextQ()};
+$('#prev').onclick=()=>{if(qi>0){qi--;ask()}};
+$('#fin').onclick=finish;
+$('#redo').onclick=()=>start(missed.slice());
+$('#home2').onclick=()=>{show('home');say('جاهزة نراجع مرة ثانية؟')};
+$('#lv').onclick=e=>{const b=e.target.closest('[data-n]');if(!b)return;N=+b.dataset.n;
+  document.querySelectorAll('#lv button').forEach(x=>x.classList.toggle('on',x===b))};
+$('#go').onclick=()=>{const q=build($('#sur').value);if(q.length)start(q)};
+load();
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+</script>
+</body>
+</html>

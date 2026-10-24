@@ -17,8 +17,11 @@ updated: 2026-10-24
 ## Map
 - `quran-review-game.html` — original game file
 - `index.html` — published copy + PWA tags; keep in sync with the original
-- `sw.js` — cache name `quran-review-v2`; bump it when index.html changes
+- `sw.js` — cache name `quran-review-v4` (v3 was the 🎤 + map version, now rolled back); bump it when index.html changes
 - `icons/` — generated from Segoe UI Emoji 🐥
+
+## Decisions
+- 🎤 + journey map rolled back here; that version lives in private Zoro77404/QuranReview2 (Desktop\QuranReview2)
 
 ## Later
 
